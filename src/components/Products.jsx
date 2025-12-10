@@ -1,35 +1,50 @@
+// src/components/Products.jsx
 import React from "react";
 import { products } from "../utils/api";
 import { Link } from "react-router-dom";
 
-export default function Products({ setCart, cart }) {
+export default function Products({ cart, setCart }) {
   const addToCart = (item) => {
-    const existing = cart.find(p => p._id === item._id);
-    if (existing) {
-      setCart(cart.map(p => p._id === item._id ? { ...p, qty: p.qty + 1 } : p));
-    } else {
-      setCart([...cart, { ...item, qty: 1 }]);
-    }
+    setCart([...cart, { ...item, quantity: 1 }]);
   };
 
   return (
-    <div style={{ padding: "20px" }}>
-      <h2 style={{ color: "#d6336c" }}>Skincare Products</h2>
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: "20px" }}>
-        {products.map((product) => (
-          <div key={product._id} style={{ padding: "15px", background: "#fff0f6", borderRadius: "12px" }}>
-            <Link to={ `/product/${product._id}`} style={{ textDecoration: "none", color: "black" }}>
-              <h3>{product.name}</h3>
-              <img src={product.image} alt={product.name} style={{ width: "100%", borderRadius: "12px" }} />
-              <p style={{ marginTop: "10px" }}>{product.description}</p>
-            </Link>
-            <p>₹ {product.price}</p>
-            <button onClick={() => addToCart(product)} style={{ padding: "10px", background: "#d6336c", color: "white", border: "none", borderRadius: "6px", cursor: "pointer", marginTop: "10px" }}>
-              Add to cart
+    <div className="p-6 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+      {products.map((p) => (
+        <div
+          key={p._id}
+          className="bg-white shadow-md rounded-xl p-4 border border-gray-200"
+        >
+          <h2 className="text-xl font-bold">{p.name}</h2>
+
+          <img
+            src={p.image}
+            alt={p.name}
+            className="w-full h-48 object-cover rounded-lg mt-3"
+          />
+
+          {/* ⭐ DESCRIPTION */}
+          <p className="text-gray-700 mt-3 text-sm">{p.description}</p>
+
+          <p className="mt-2 text-pink-600 font-semibold">₹{p.price}</p>
+
+          <div className="flex gap-3 mt-4">
+            <button
+              onClick={() => addToCart(p)}
+              className="bg-pink-600 text-white px-4 py-2 rounded-lg"
+            >
+              Add to Cart
             </button>
+
+            <Link
+              to={`/product/${p._id}`}
+              className="bg-gray-800 text-white px-4 py-2 rounded-lg"
+            >
+              View
+            </Link>
           </div>
-        ))}
-      </div>
+        </div>
+      ))}
     </div>
   );
 }

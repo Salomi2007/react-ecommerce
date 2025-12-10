@@ -1,69 +1,29 @@
 // src/components/ProductDetail.jsx
-import React from "react";
-import { useParams, Link, useNavigate } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import { products } from "../utils/api";
 
-export default function ProductDetail({ cart, setCart, user }) {
+export default function ProductDetail() {
   const { id } = useParams();
-  const navigate = useNavigate();
+  const product = products.find((p) => p._id === id);
 
-  const product = products.find(p => p._id === id);
-
-  if (!product) return <p>Product not found</p>;
-
-  const addToCart = () => {
-    if (!user) {          // <-- use prop, not localStorage
-      alert("You must login to add to cart!");
-      navigate("/login");
-      return;
-    }
-
-    const existing = cart.find(p => p._id === product._id);
-    if (existing) {
-      setCart(cart.map(p => p._id === product._id ? { ...p, qty: p.qty + 1 } : p));
-    } else {
-      setCart([...cart, { ...product, qty: 1 }]);
-    }
-  };
-
-  const handleBuyNow = () => {
-    if (!user) {
-      alert("You must login to buy!");
-      navigate("/login");
-      return;
-    }
-
-    const existing = cart.find(p => p._id === product._id);
-    let newCart;
-    if (existing) {
-      newCart = cart.map(p => p._id === product._id ? { ...p, qty: p.qty + 1 } : p);
-    } else {
-      newCart = [...cart, { ...product, qty: 1 }];
-    }
-    setCart(newCart);
-
-    alert("Added to cart! Proceed to Cart to Buy Now.");
-    navigate("/cart");
-  };
+  if (!product) return <h2 className="text-center mt-10">Product not found</h2>;
 
   return (
-    <div>
-      <h2>{product.name}</h2>
-      <img src={product.image} alt={product.name} style={{ width: "300px" }} />
-      <p>Price: ₹ {product.price}</p>
-      <p>{product.description}</p>
+    <div className="p-6 max-w-3xl mx-auto bg-white rounded-xl shadow-lg">
+      <h1 className="text-3xl font-bold">{product.name}</h1>
 
-      <button onClick={addToCart} style={{ marginRight: "10px", padding: "10px 15px", background: "#007bff", color: "white", border: "none", borderRadius: "8px", cursor: "pointer" }}>
-        Add to Cart
-      </button>
+      <img
+        src={product.image}
+        alt={product.name}
+        className="w-full h-80 object-cover rounded-lg mt-4"
+      />
 
-      <button onClick={handleBuyNow} style={{ padding: "10px 15px", background: "#28a745", color: "white", border: "none", borderRadius: "8px", cursor: "pointer" }}>
-        Buy Now
-      </button>
+      {/* ⭐ FULL DESCRIPTION */}
+      <p className="text-gray-700 text-lg mt-4">{product.description}</p>
 
-      <div style={{ marginTop: "20px" }}>
-        <Link to="/">← Back to Products</Link>
-      </div>
+      <p className="text-2xl font-semibold text-pink-600 mt-6">
+        ₹{product.price}
+      </p>
     </div>
   );
 }
